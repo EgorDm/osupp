@@ -7,113 +7,48 @@
 
 #include <cmath>
 #include <vector>
+#include <ostream>
 
-class Coordinate {
-public:
-    float x, y;
+#define VECTOR_NORMALIZE_EPSILON 0.000001f
+
+struct Coordinate {
+    float x;
+    float y;
 
     Coordinate() : x(0), y(0) {};
 
-    Coordinate(float x, float y) : x(x), y(y) {}
+    Coordinate(float x, float y) : x(x), y(y) {};
 
-    Coordinate &operator=(const Coordinate &c) {
-        x = c.x;
-        y = c.y;
-        return *this;
-    }
+    void zero();
 
-    Coordinate operator+(Coordinate &c) {
-        return Coordinate(x + c.x, y + c.y);
-    }
+    void set(float x, float y);
 
-    Coordinate operator-(Coordinate &c) {
-        return Coordinate(x - c.x, y - c.y);
-    }
+    float length() const;                         //
+    float distance(const Coordinate &vec) const;     // distance between two vectors
+    Coordinate &normalize();                            //
+    float dot(const Coordinate &vec) const;          // dot product
+    bool equal(const Coordinate &vec, float e) const; // compare with epsilon
 
-    Coordinate &operator+=(Coordinate &c) {
-        x += c.x;
-        y += c.y;
-        return *this;
-    }
+    Coordinate operator-() const;                      // unary operator (negate)
+    Coordinate operator+(const Coordinate &rhs) const;    // add rhs
+    Coordinate operator-(const Coordinate &rhs) const;    // subtract rhs
+    Coordinate &operator+=(const Coordinate &rhs);         // add rhs and update this object
+    Coordinate &operator-=(const Coordinate &rhs);         // subtract rhs and update this object
+    Coordinate operator*(const float scale) const;     // scale
+    Coordinate operator*(const Coordinate &rhs) const;    // multiply each element
+    Coordinate &operator*=(const float scale);          // scale and update this object
+    Coordinate &operator*=(const Coordinate &rhs);         // multiply each element and update this object
+    Coordinate operator/(const float scale) const;     // inverse scale
+    Coordinate &operator/=(const float scale);          // scale and update this object
+    bool operator==(const Coordinate &rhs) const;   // exact compare, no epsilon
+    bool operator!=(const Coordinate &rhs) const;   // exact compare, no epsilon
+    bool operator<(const Coordinate &rhs) const;    // comparison for sort
+    float operator[](int index) const;            // subscript operator v[0], v[1]
+    float &operator[](int index);                  // subscript operator v[0], v[1]
 
-    Coordinate &operator-=(Coordinate &c) {
-        x -= c.x;
-        y -= c.y;
-        return *this;
-    }
+    friend Coordinate operator*(const float a, const Coordinate vec);
 
-    Coordinate operator+(float s) {
-        return Coordinate(x + s, y + s);
-    }
-
-    Coordinate operator-(float s) {
-        return Coordinate(x - s, y - s);
-    }
-
-    Coordinate operator*(float s) {
-        return Coordinate(x * s, y * s);
-    }
-
-    Coordinate operator/(float s) {
-        return Coordinate(x / s, y / s);
-    }
-
-    Coordinate &operator+=(float s) {
-        x += s;
-        y += s;
-        return *this;
-    }
-
-    Coordinate &operator-=(float s) {
-        x -= s;
-        y -= s;
-        return *this;
-    }
-
-    Coordinate &operator*=(float s) {
-        x *= s;
-        y *= s;
-        return *this;
-    }
-
-    Coordinate &operator/=(float s) {
-        x /= s;
-        y /= s;
-        return *this;
-    }
-
-    float dist(Coordinate v) const {
-        Coordinate d(v.x - x, v.y - y);
-        return d.length();
-    }
-
-    float length() const {
-        return std::sqrt(x * x + y * y);
-    }
-
-    static float dot(Coordinate v1, Coordinate v2) {
-        return v1.x * v2.x + v1.y * v2.y;
-    }
-};
-
-class CurveBuilder {
-public:
-    explicit CurveBuilder(const std::vector<Coordinate> &ps) : points(ps) {};
-
-    virtual std::vector<Coordinate> build() { return points; };
-
-private:
-    std::vector<Coordinate> points;
-};
-
-class BezierBuilder : public CurveBuilder {
-public:
-    BezierBuilder(const std::vector<Coordinate> &ps);
-
-    std::vector<Coordinate> build() override;
-
-    bool isFlatEnough(std::vector<Coordinate> controlPoints);
-
+    friend std::ostream &operator<<(std::ostream &os, const Coordinate &vec);
 };
 
 #endif //OSUPP_MATHS_H
