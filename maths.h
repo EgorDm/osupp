@@ -51,6 +51,8 @@ struct Coordinate {
     friend std::ostream &operator<<(std::ostream &os, const Coordinate &vec);
 };
 
+#define Coords std::vector<Coordinate>
+
 namespace maths {
     bool isClose(float a, float b);
 
