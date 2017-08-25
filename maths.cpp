@@ -117,6 +117,63 @@ Coordinate operator*(const float a, const Coordinate vec) {
 std::ostream& operator<<(std::ostream& os, const Coordinate& vec) {
     os << "(" << vec.x << ", " << vec.y << ")";
     return os;
+    std::vector<Coordinate> perfectCurve(Coordinate a, Coordinate b, Coordinate c) {
+        // TODO this is a mess
+        float aSq = std::pow((b - c).length(), 2);
+        float bSq = std::pow((a - c).length(), 2);
+        float cSq = std::pow((a - b).length(), 2);
+
+        if (isClose(aSq, 0) || isClose(bSq, 0) || isClose(cSq, 0))
+            return {a};
+
+        float s = aSq * (bSq + cSq - aSq);
+        float t = bSq * (aSq + cSq - bSq);
+        float u = cSq * (aSq + bSq - cSq);
+
+        float sum = s + t + u;
+
+        if (isClose(sum, 0))
+            return {a};
+
+        Coordinate centre = (s * a + t * b + u * c) / sum;
+        Coordinate dA = a - centre;
+        Coordinate dC = c - centre;
+        float r = dA.length();
+
+        float thetaStart = atan2(dA.y, dA.x);
+        float thetaEnd = atan2(dC.y, dC.x);
+
+        while (thetaEnd < thetaStart)
+            thetaEnd += 2 * M_PI;
+
+        int dir = 1;
+        float thetaRange = thetaEnd - thetaStart;
+
+        Coordinate orthoAtoC = c - a;
+        orthoAtoC = Coordinate(orthoAtoC.y, -orthoAtoC.x);
+        if (orthoAtoC.dot(b - a) < 0) {
+            dir = -dir;
+            thetaRange = 2 * M_PI - thetaRange;
+        }
+
+        int amountPoints;
+        if (2 * r <= 0.1) {
+            amountPoints = 2;
+        } else {
+            amountPoints = std::max(2, static_cast<const int &>(ceil(thetaRange / (2 * acos(1 - 0.1 / r)))));
+        }
+
+        std::vector<Coordinate> output;
+        for (int i = 0; i < amountPoints; ++i) {
+            float fract = static_cast<float>(i) / (amountPoints - 1);
+            float theta = thetaStart + dir * fract * thetaRange;
+            Coordinate o = Coordinate(cos(theta), sin(theta)) * r;
+            output.push_back(centre + o);
+        }
+
+        return output;
+    }
+
     Coordinate catmullPoint(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate p4, float t) {
         return catmullAlpha * ((-p1 + 3 * p2 - 3 * p3 + p4) * std::pow(t, 3)
                                + (2 * p1 - 5 * p2 + 4 * p3 - p4) * std::pow(t, 2)

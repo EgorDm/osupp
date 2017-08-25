@@ -51,6 +51,9 @@ struct Coordinate {
     friend std::ostream &operator<<(std::ostream &os, const Coordinate &vec);
 };
 
+
+    Coords perfectCurve(Coordinate a, Coordinate b, Coordinate c);
+
     Coordinate catmullPoint(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate p4, float t);
 
     Coords catmullCurve(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate p4, float interval);
