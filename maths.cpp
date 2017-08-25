@@ -117,6 +117,107 @@ Coordinate operator*(const float a, const Coordinate vec) {
 std::ostream& operator<<(std::ostream& os, const Coordinate& vec) {
     os << "(" << vec.x << ", " << vec.y << ")";
     return os;
+
+namespace maths {
+    const float TOLERANCE_SQ = 0.25f * 0.25f;
+
+    const float catmullAlpha = 0.5f;
+
+    bool isClose(float a, float b) { return std::abs(a - b) < 0.01; };
+
+    void subdivide(Coords &controlPoints, Coords &l, Coords &r, unsigned long pointsCount, Coords &subdivisionBuffer1) {
+        std::vector<Coordinate> &midpoints = subdivisionBuffer1;
+
+        for (int i = 0; i < pointsCount; ++i) {
+            midpoints[i] = controlPoints[i];
+        }
+
+        for (int i = 0; i < pointsCount; i++) {
+            l[i] = midpoints[0];
+            r[pointsCount - i - 1] = midpoints[pointsCount - i - 1];
+
+            for (int j = 0; j < pointsCount - i - 1; j++) {
+                midpoints[j] = (midpoints[j] + midpoints[j + 1]) / 2;
+            }
+        }
+    }
+
+    bool isFlatEnough(Coords controlPoints) {
+        for (int i = 1; i < controlPoints.size() - 1; i++) {
+
+            if (std::pow((controlPoints[i - 1] - 2 * controlPoints[i] + controlPoints[i + 1]).length(), 2.0f) >
+                TOLERANCE_SQ * 4)
+                return false;
+        }
+
+        return true;
+    }
+
+    void approximate(Coords &controlPoints, Coords &output, unsigned long pointsCount, Coords &subdivisionBuffer1, Coords &subdivisionBuffer2) {
+        std::vector<Coordinate> &l = subdivisionBuffer2;
+        std::vector<Coordinate> &r = subdivisionBuffer1;
+
+        subdivide(controlPoints, l, r, pointsCount, subdivisionBuffer1);
+
+        for (int i = 0; i < pointsCount - 1; ++i)
+            l[pointsCount + i] = r[i + 1];
+
+        output.push_back(controlPoints[0]);
+        for (int i = 1; i < pointsCount - 1; ++i) {
+            int index = 2 * i;
+            Coordinate p = 0.25f * (l[index - 1] + 2 * l[index] + l[index + 1]);
+            output.push_back(p);
+        }
+    }
+
+    Coords bezierCurve(Coords points) {
+        std::vector<Coordinate> output;
+        unsigned long pointsCount = points.size();
+        Coords subdivisionBuffer1(pointsCount);
+        Coords subdivisionBuffer2(pointsCount * 2 - 1);
+
+        if (pointsCount == 0)
+            return output;
+
+        std::stack<std::vector<Coordinate>> toFlatten;
+        std::stack<std::vector<Coordinate>> freeBuffers;
+
+        toFlatten.push(points);
+
+        std::vector<Coordinate> &leftChild = subdivisionBuffer2;
+
+        while (!toFlatten.empty()) {
+            std::vector<Coordinate> parent = static_cast<std::vector<Coordinate> &&>(toFlatten.top());
+            toFlatten.pop();
+
+            if (isFlatEnough(parent)) {
+                approximate(parent, output, pointsCount, subdivisionBuffer1, subdivisionBuffer2);
+                freeBuffers.push(parent);
+                continue;
+            }
+
+            std::vector<Coordinate> rightChild;
+            if (!freeBuffers.empty()) {
+                rightChild = freeBuffers.top();
+                freeBuffers.pop();
+            } else {
+                rightChild.resize(pointsCount);
+            }
+            subdivide(parent, leftChild, rightChild, pointsCount, subdivisionBuffer1);
+
+            for (int i = 0; i < pointsCount; ++i) {
+                parent[i] = leftChild[i];
+            }
+
+            toFlatten.push(rightChild);
+            toFlatten.push(parent);
+        }
+
+        output.push_back(points[pointsCount - 1]);
+        return output;
+    }
+
+
     std::vector<Coordinate> perfectCurve(Coordinate a, Coordinate b, Coordinate c) {
         // TODO this is a mess
         float aSq = std::pow((b - c).length(), 2);

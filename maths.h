@@ -51,6 +51,10 @@ struct Coordinate {
     friend std::ostream &operator<<(std::ostream &os, const Coordinate &vec);
 };
 
+namespace maths {
+    bool isClose(float a, float b);
+
+    Coords bezierCurve(Coords controlPoints);
 
     Coords perfectCurve(Coordinate a, Coordinate b, Coordinate c);
 
@@ -59,4 +63,6 @@ struct Coordinate {
     Coords catmullCurve(Coordinate p1, Coordinate p2, Coordinate p3, Coordinate p4, float interval);
 
     Coords catmullChain(Coords points, float interval);
+}
+
 #endif //OSUPP_MATHS_H
