@@ -8,15 +8,38 @@
 #include <vector>
 #include "maths.h"
 
-class CurveType {
+enum CurveType {
+    Linear, Bezier, Perfect, Catmull
+};
+
+class Curve {
 public:
-    CurveType(const std::vector<Coordinate> &points);
 
-    CurveType() {};
 
+    explicit Curve(CurveType type, const std::vector<Coordinate> &points, double length);
+
+    Curve() {};
+
+    Coordinate positionAt(double progress);
+
+    double length();
+
+    inline CurveType getType() { return type; }
+
+private:
+    void calcCumLength();
+
+    int indexOfDistance(double d);
+
+    double progressToDistance(double progress);
+
+    Coordinate interpolateVertices(int i, double d);
+
+    CurveType type;
     std::vector<Coordinate> points;
-    std::vector<float> cum_length;
-    float distance;
+    std::vector<double> cumLength;
+    double lenOrigin = 0;
+
 };
 
 #endif //OSUPP_CURVES_H

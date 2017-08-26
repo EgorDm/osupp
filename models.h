@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <map>
+#include "curves.h"
 
 struct HitObject {
     int x, y;
@@ -15,16 +16,12 @@ struct HitObject {
 };
 
 struct HitCircle : HitObject {
-    int sampleType;
-    int number;
-    int colorCounter;
-    bool clicked;
 };
 
 struct Slider : HitObject {
-    char type;
     int repeat;
     float pixelLength;
+    Curve curve;
 };
 
 struct Spinner : HitObject {

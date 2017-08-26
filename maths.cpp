@@ -229,7 +229,6 @@ namespace maths {
         return output;
     }
 
-
     std::vector<Coordinate> perfectCurve(Coordinate a, Coordinate b, Coordinate c) {
         // TODO this is a mess
         float aSq = std::pow((b - c).length(), 2);
@@ -309,4 +308,9 @@ namespace maths {
         }
         return ret;
     }
+
+    double clamp(double x, double lower, double upper) {
+        return std::min(upper, std::max(x, lower));
+    }
+
 }
