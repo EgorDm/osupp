@@ -10,6 +10,10 @@
 class BeatmapReader {
 private:
 
+    static std::vector<std::string> readSection(std::ifstream &file, std::string sectionTag);
+
+    static std::map<std::string, std::string> readAttributeSection(std::ifstream &file, std::string sectionTag);
+
     template<typename T>
     static void parseAttrib(std::map<std::string, std::string> &attribs, std::string key, T &target);
 

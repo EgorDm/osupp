@@ -8,6 +8,27 @@
 #include "beatmap.h"
 #include "utils.h"
 
+std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::string sectionTag) {
+    std::vector<std::string> ret;
+    std::string line;
+
+    while (utils::getline(file, line) && line != sectionTag) continue;
+    while (utils::getline(file, line) && !line.empty()) {
+        ret.push_back(line);
+    }
+    return ret;
+}
+
+std::map<std::string, std::string> BeatmapReader::readAttributeSection(std::ifstream &file, std::string sectionTag) {
+    std::map<std::string, std::string> ret;
+    for (const auto &line : readSection(file, sectionTag)) {
+        unsigned long pos = line.find(':');
+        if (pos != std::string::npos)
+            ret[line.substr(0, pos)] = line.substr(pos + 1, line.size() - pos);
+    }
+    return ret;
+}
+
 template<typename T>
 void BeatmapReader::parseAttrib(std::map<std::string, std::string> &attribs, std::string key, T &target) {
     auto it = attribs.find(key);
