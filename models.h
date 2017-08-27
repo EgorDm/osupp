@@ -104,6 +104,25 @@ struct BeatmapEntry {
     std::vector<std::shared_ptr<TimingPoint>> timingpoints;
 };
 
+struct Beatmap {
+    std::string title;
+    std::string artist;
+    std::string creator;
+    std::string version;
+
+    int id;
+    int set_id;
+
+    float ar;
+    float cs;
+    float hp;
+    float od;
+
+    float sliderMultiplayer;
+    float sliderTickRate;
+
+    std::vector<std::shared_ptr<TimingPoint>> timingpoints;
+    std::vector<std::shared_ptr<HitObject>> hitobjects;
 };
 
 #endif //OSUPP_MODELS_H
