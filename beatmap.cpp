@@ -8,6 +8,17 @@
 #include "beatmap.h"
 #include "utils.h"
 
+Beatmap BeatmapReader::read(std::string path) {
+    auto ret = Beatmap();
+    std::ifstream file(path);
+
+    readMeta(file, ret);
+    readDifficulty(file, ret);
+    readTimingPoints(file, ret);
+    readHitObjects(file, ret);
+    return ret;
+}
+
 void BeatmapReader::readMeta(std::ifstream &file, Beatmap &beatmap) {
     auto section = readAttributeSection(file, "[Metadata]");
     parseAttrib(section, "Title", beatmap.title);
@@ -73,6 +84,18 @@ void BeatmapReader::readHitObjects(std::ifstream &file, Beatmap &beatmap) {
         }
     }
 }
+
+Curve BeatmapReader::parseCurve(Coordinate pos, std::string &str, const float &pxLength) {
+    auto tokens = utils::split(str, "|", -1);
+    std::vector<Coordinate> points{pos};
+    auto type = static_cast<Curve::CurveType>(tokens[0][0]);
+    for (int i = 1; i < tokens.size(); ++i) {
+        auto coordp = utils::split(tokens[i], ":", 2);
+        points.emplace_back(std::stof(coordp[0]), std::stof(coordp[1]));
+    }
+    return Curve(type, points, pxLength);
+}
+
 std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::string sectionTag) {
     std::vector<std::string> ret;
     std::string line;

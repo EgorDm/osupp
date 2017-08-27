@@ -8,6 +8,9 @@
 #include "models.h"
 
 class BeatmapReader {
+public:
+    static Beatmap read(std::string path);
+
 private:
     static void readMeta(std::ifstream &file, Beatmap &beatmap);
 
