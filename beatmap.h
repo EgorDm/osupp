@@ -15,6 +15,9 @@ private:
 
     static void readTimingPoints(std::ifstream &file, Beatmap &beatmap);
 
+    static void readHitObjects(std::ifstream &file, Beatmap &beatmap);
+
+    static Curve parseCurve(Coordinate pos, std::string &str, const float &pxLength);
 
     static std::vector<std::string> readSection(std::ifstream &file, std::string sectionTag);
 

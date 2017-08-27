@@ -47,6 +47,32 @@ void BeatmapReader::readTimingPoints(std::ifstream &file, Beatmap &beatmap) {
     }
 }
 
+void BeatmapReader::readHitObjects(std::ifstream &file, Beatmap &beatmap) {
+    Coordinate pos;
+    int time;
+    int type;
+    for (const auto &line : readSection(file, "[HitObjects]")) {
+        try {
+            auto tokens = utils::split(line, ",", -1);
+            pos = Coordinate(std::stof(tokens[0]), std::stof(tokens[1]));
+
+            time = std::stoi(tokens[2]);
+            type = std::stoi(tokens[3]);
+            if ((type & HitCircle::HitObjectType::HitCircle) != 0) {
+                beatmap.hitobjects.push_back(std::make_shared<HitCircle>(pos, time));
+            } else if ((type & HitCircle::HitObjectType::Spinner) != 0) {
+                beatmap.hitobjects.push_back(std::make_shared<Spinner>(pos, time, std::stoi(tokens[5])));
+            } else if ((type & HitCircle::HitObjectType::Slider) != 0) {
+                float pxLength = std::stof(tokens[7]);
+                Curve curve = parseCurve(pos, tokens[5], pxLength);
+                beatmap.hitobjects.push_back(
+                        std::make_shared<Slider>(pos, time, std::stoi(tokens[6]), pxLength, curve));
+            }
+        } catch (...) {
+            // TODO:  something
+        }
+    }
+}
 std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::string sectionTag) {
     std::vector<std::string> ret;
     std::string line;
