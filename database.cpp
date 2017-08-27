@@ -104,10 +104,11 @@ BeatmapEntry *OsuDB::readBeatmap() {
 
         int n_tps = readInt();
         for (int i = 0; i < n_tps; ++i) {
-            bm->timingpoints.push_back(readTimingPoint());
+            bm->timingpoints.push_back(std::shared_ptr<TimingPoint>(readTimingPoint()));
+            //bm->timingpoints.push_back(readTimingPoint());
         }
 
-        readVal(bm->beatmap_id);
+        readVal(bm->id);
         readVal(bm->set_id);
         file.ignore(14);
 
