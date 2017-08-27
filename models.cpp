@@ -3,9 +3,3 @@
 //
 
 #include "models.h"
-
-BeatmapEntry::~BeatmapEntry() {
-    for(TimingPoint* tp : timingpoints) {
-        delete tp;
-    }
-}

@@ -8,23 +8,41 @@
 
 #include <vector>
 #include <map>
+#include <memory>
 #include "curves.h"
 
+
 struct HitObject {
-    int x, y;
+    enum HitObjectType {
+        HitCircle = 1,
+        Slider = 2,
+        Spinner = 8
+    };
+
+
+    Coordinate pos;
     unsigned long time;
+
+    HitObject(const Coordinate &pos, unsigned long time) : pos(pos), time(time) {}
+
 };
 
 struct HitCircle : HitObject {
+    HitCircle(const Coordinate &pos, unsigned long time) : HitObject(pos, time) {}
 };
 
 struct Slider : HitObject {
+    Slider(const Coordinate &pos, unsigned long time, int repeat, float pixelLength, Curve &curve)
+            : HitObject(pos, time), repeat(repeat), pixelLength(pixelLength), curve(curve) {}
+
     int repeat;
     float pixelLength;
     Curve curve;
 };
 
 struct Spinner : HitObject {
+    Spinner(const Coordinate &pos, unsigned long time, unsigned long endTime) : HitObject(pos, time), endTime(endTime) {};
+
     unsigned long endTime;
 };
 
@@ -45,7 +63,7 @@ struct KeyTimingPoint : TimingPoint {
 };
 
 struct InheritedTimingPoint : TimingPoint {
-    KeyTimingPoint *parent;
+    std::shared_ptr<KeyTimingPoint> parent;
     float slider_multiplayer;
 
     InheritedTimingPoint() {}
@@ -54,9 +72,7 @@ struct InheritedTimingPoint : TimingPoint {
                                                                     slider_multiplayer(slider_multiplayer) {}
 };
 
-class BeatmapEntry {
-public:
-    virtual ~BeatmapEntry();
+struct BeatmapEntry {
 
     std::string title;
     std::string artist;
@@ -69,7 +85,7 @@ public:
     char mode;
     char ranked;
 
-    int beatmap_id;
+    int id;
     int set_id;
 
     float ar;
@@ -85,7 +101,9 @@ public:
     int time_drain;
     int time_total;
 
-    std::vector<TimingPoint *> timingpoints;
+    std::vector<std::shared_ptr<TimingPoint>> timingpoints;
+};
+
 };
 
 #endif //OSUPP_MODELS_H
