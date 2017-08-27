@@ -5,8 +5,8 @@
 #ifndef OSUPP_UTILS_H
 #define OSUPP_UTILS_H
 
-
 #include <vector>
+#include <string>
 
 namespace utils {
     std::istream& getline(std::istream &is, std::string &t);
