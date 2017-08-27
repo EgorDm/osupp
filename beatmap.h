@@ -9,6 +9,8 @@
 
 class BeatmapReader {
 private:
+    static void readMeta(std::ifstream &file, Beatmap &beatmap);
+
 
     static std::vector<std::string> readSection(std::ifstream &file, std::string sectionTag);
 

@@ -8,6 +8,15 @@
 #include "beatmap.h"
 #include "utils.h"
 
+void BeatmapReader::readMeta(std::ifstream &file, Beatmap &beatmap) {
+    auto section = readAttributeSection(file, "[Metadata]");
+    parseAttrib(section, "Title", beatmap.title);
+    parseAttrib(section, "Artist", beatmap.artist);
+    parseAttrib(section, "Creator", beatmap.creator);
+    parseAttrib(section, "Version", beatmap.version);
+    parseAttrib(section, "BeatmapID", beatmap.id);
+    parseAttrib(section, "BeatmapSetID", beatmap.set_id);
+}
 std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::string sectionTag) {
     std::vector<std::string> ret;
     std::string line;
