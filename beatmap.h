@@ -13,6 +13,8 @@ private:
 
     static void readDifficulty(std::ifstream &file, Beatmap &beatmap);
 
+    static void readTimingPoints(std::ifstream &file, Beatmap &beatmap);
+
 
     static std::vector<std::string> readSection(std::ifstream &file, std::string sectionTag);
 

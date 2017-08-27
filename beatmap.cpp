@@ -27,6 +27,26 @@ void BeatmapReader::readDifficulty(std::ifstream &file, Beatmap &beatmap) {
     parseAttrib(section, "SliderMultiplier", beatmap.sliderMultiplayer);
     parseAttrib(section, "SliderTickRate", beatmap.sliderTickRate);
 }
+
+void BeatmapReader::readTimingPoints(std::ifstream &file, Beatmap &beatmap) {
+    int offset;
+    float mpb;
+    std::shared_ptr<KeyTimingPoint> lastKeyPoint = nullptr;
+    for (const auto &line : readSection(file, "[TimingPoints]")) {
+        auto tokens = utils::split(line, ",", 3);
+        parse(tokens[0], offset);
+        parse(tokens[1], mpb);
+        if (mpb > 0) {
+            lastKeyPoint = std::make_shared<KeyTimingPoint>(offset, mpb);
+            beatmap.timingpoints.push_back(lastKeyPoint);
+        } else {
+            auto tp = std::make_shared<InheritedTimingPoint>(offset, mpb / -100);
+            tp->parent = lastKeyPoint;
+            beatmap.timingpoints.push_back(tp);
+        }
+    }
+}
+
 std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::string sectionTag) {
     std::vector<std::string> ret;
     std::string line;
