@@ -17,6 +17,16 @@ void BeatmapReader::readMeta(std::ifstream &file, Beatmap &beatmap) {
     parseAttrib(section, "BeatmapID", beatmap.id);
     parseAttrib(section, "BeatmapSetID", beatmap.set_id);
 }
+
+void BeatmapReader::readDifficulty(std::ifstream &file, Beatmap &beatmap) {
+    auto section = readAttributeSection(file, "[Difficulty]");
+    parseAttrib(section, "HPDrainRate", beatmap.hp);
+    parseAttrib(section, "CircleSize", beatmap.cs);
+    parseAttrib(section, "OverallDifficulty", beatmap.od);
+    parseAttrib(section, "ApproachRate", beatmap.ar);
+    parseAttrib(section, "SliderMultiplier", beatmap.sliderMultiplayer);
+    parseAttrib(section, "SliderTickRate", beatmap.sliderTickRate);
+}
 std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::string sectionTag) {
     std::vector<std::string> ret;
     std::string line;
