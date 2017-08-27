@@ -1,8 +1,11 @@
 //
 // Created by egordm on 24-8-2017.
 //
+#define _USE_MATH_DEFINES
 
 #include <stack>
+#include <algorithm>
+#include <cmath>
 #include "maths.h"
 
 Coordinate Coordinate::operator-() const {
