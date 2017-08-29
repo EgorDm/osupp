@@ -21,7 +21,7 @@ public:
 
     Curve() {};
 
-    Coordinate positionAt(double progress);
+    Coordinate positionAt(float progress);
 
     double length();
 
@@ -32,7 +32,7 @@ private:
 
     int indexOfDistance(double d);
 
-    double progressToDistance(double progress);
+    double progressToDistance(float progress);
 
     Coordinate interpolateVertices(int i, double d);
 

@@ -59,7 +59,7 @@ int Curve::indexOfDistance(double d) {
     return i;
 }
 
-double Curve::progressToDistance(double progress) {
+double Curve::progressToDistance(float progress) {
     return maths::clamp(progress, 0, 1) * lenOrigin;
 }
 
@@ -85,7 +85,7 @@ Coordinate Curve::interpolateVertices(int i, double d) {
     return p0 + (p1 - p0) * (float) w;
 }
 
-Coordinate Curve::positionAt(double progress) {
+Coordinate Curve::positionAt(float progress) {
     if (cumLength.empty()) calcCumLength();
 
     double d = progressToDistance(progress);
