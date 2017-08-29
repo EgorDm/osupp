@@ -42,3 +42,4 @@ out
 gen
 /cmake-build-executable
 /cmake-build-pylibrary
+/cmake-build-library
