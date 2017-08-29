@@ -46,12 +46,12 @@ public:
 
     int version;
     std::string user;
-    std::vector<BeatmapEntry *> entries;
+    std::vector<BeatmapEntry> entries;
 
     void read();
 
 protected:
-    BeatmapEntry *readBeatmap();
+    BeatmapEntry readBeatmap();
     TimingPoint *readTimingPoint();
     std::map<int, double> readDiffPairs();
 };

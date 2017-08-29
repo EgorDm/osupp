@@ -57,69 +57,68 @@ void OsuDB::read() {
     printf("Reading %s's database. Expecting %i maps.\n", user.c_str(), n_beatmaps); //TODO: C, not cool m8
 
     for (auto i = 0; i < n_beatmaps; ++i) {
-        auto bm = readBeatmap();
-        if (bm == nullptr) continue;
-        entries.push_back(bm);
-        //cout << bm->title.c_str() << " - " << bm->version.c_str() << std::endl;
+        try {
+            auto bm = readBeatmap();
+            entries.push_back(bm);
+        } catch (...) {}
     }
 }
 
-BeatmapEntry *OsuDB::readBeatmap() {
+BeatmapEntry OsuDB::readBeatmap() {
     auto planB = readInt();
     planB += static_cast<int>(file.tellg());
 
-    BeatmapEntry *bm = nullptr;
     try {
-        bm = new BeatmapEntry();
-        readString(bm->artist);
+        BeatmapEntry bm = BeatmapEntry();
+        readString(bm.artist);
         skipString();
-        readString(bm->title);
+        readString(bm.title);
         skipString();
-        readString(bm->creator);
-        readString(bm->version);
-        readString(bm->audio_file);
+        readString(bm.creator);
+        readString(bm.version);
+        readString(bm.audio_file);
 
 
         skipString();
-        readString(bm->osu_file);
-        readVal(bm->ranked);
+        readString(bm.osu_file);
+        readVal(bm.ranked);
         file.ignore(14);
 
-        readVal(bm->ar);
-        readVal(bm->cs);
-        readVal(bm->hp);
-        readVal(bm->od);
+        readVal(bm.ar);
+        readVal(bm.cs);
+        readVal(bm.hp);
+        readVal(bm.od);
         file.ignore(8);
 
         if (version >= 20140609) {
-            bm->std_diffs = readDiffPairs();
-            bm->taiko_diffs = readDiffPairs();
-            bm->ctb_diffs = readDiffPairs();
-            bm->mania_diffs = readDiffPairs();
+            bm.std_diffs = readDiffPairs();
+            bm.taiko_diffs = readDiffPairs();
+            bm.ctb_diffs = readDiffPairs();
+            bm.mania_diffs = readDiffPairs();
         }
 
-        readVal(bm->time_drain);
-        readVal(bm->time_total);
+        readVal(bm.time_drain);
+        readVal(bm.time_total);
         file.ignore(4);
 
         int n_tps = readInt();
         for (int i = 0; i < n_tps; ++i) {
-            bm->timingpoints.push_back(std::shared_ptr<TimingPoint>(readTimingPoint()));
-            //bm->timingpoints.push_back(readTimingPoint());
+            bm.timingpoints.push_back(std::shared_ptr<TimingPoint>(readTimingPoint()));
+            //bm.timingpoints.push_back(readTimingPoint());
         }
 
-        readVal(bm->id);
-        readVal(bm->set_id);
+        readVal(bm.id);
+        readVal(bm.set_id);
         file.ignore(14);
 
-        readVal(bm->mode);
+        readVal(bm.mode);
         skipString();
         skipString();
         file.ignore(2);
         skipString();
         file.ignore(10);
 
-        readString(bm->folder_name);
+        readString(bm.folder_name);
         file.ignore(18);
         if (static_cast<int>(file.tellg()) != planB)
             throw std::runtime_error("Offsets are not equal. Entry corrupted?");
@@ -129,8 +128,7 @@ BeatmapEntry *OsuDB::readBeatmap() {
         std::cerr << "exception: " << e.what() << std::endl;
     }
     file.seekg(planB, ios::beg);
-    if (bm != nullptr) delete bm;
-    return nullptr;
+    throw std::runtime_error("Could not read the beatmap entry.");
 }
 
 TimingPoint *OsuDB::readTimingPoint() {
@@ -160,7 +158,4 @@ std::map<int, double> OsuDB::readDiffPairs() {
 }
 
 OsuDB::~OsuDB() {
-    for (BeatmapEntry *bm : entries) {
-        delete bm;
-    }
 }
