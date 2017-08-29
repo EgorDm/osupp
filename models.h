@@ -11,47 +11,15 @@
 #include <memory>
 #include "curves.h"
 
-
-struct HitObject {
-    enum HitObjectType {
-        HitCircle = 1,
-        Slider = 2,
-        Spinner = 8
-    };
-
-
-    Coordinate pos;
-    unsigned long time;
-
-    HitObject(const Coordinate &pos, unsigned long time) : pos(pos), time(time) {}
-
-};
-
-struct HitCircle : HitObject {
-    HitCircle(const Coordinate &pos, unsigned long time) : HitObject(pos, time) {}
-};
-
-struct Slider : HitObject {
-    Slider(const Coordinate &pos, unsigned long time, int repeat, float pixelLength, Curve &curve)
-            : HitObject(pos, time), repeat(repeat), pixelLength(pixelLength), curve(curve) {}
-
-    int repeat;
-    float pixelLength;
-    Curve curve;
-};
-
-struct Spinner : HitObject {
-    Spinner(const Coordinate &pos, unsigned long time, unsigned long endTime) : HitObject(pos, time), endTime(endTime) {};
-
-    unsigned long endTime;
-};
-
 struct TimingPoint {
     double offset;
+    float sliderMultiplayer = 1;
 
     TimingPoint() {}
 
     explicit TimingPoint(double offset) : offset(offset) {}
+
+    virtual double getMPB() { return -1; };
 };
 
 struct KeyTimingPoint : TimingPoint {
@@ -60,20 +28,79 @@ struct KeyTimingPoint : TimingPoint {
     KeyTimingPoint() {}
 
     KeyTimingPoint(double offset, double mpb) : TimingPoint(offset), mpb(mpb) {}
+
+    double getMPB() override {
+        return mpb;
+    }
 };
 
 struct InheritedTimingPoint : TimingPoint {
     std::shared_ptr<KeyTimingPoint> parent;
-    float slider_multiplayer;
 
     InheritedTimingPoint() {}
 
-    InheritedTimingPoint(double offset, float slider_multiplayer) : TimingPoint(offset),
-                                                                    slider_multiplayer(slider_multiplayer) {}
+    InheritedTimingPoint(double offset, float sliderMultiplayer) : TimingPoint(offset) {this->sliderMultiplayer = sliderMultiplayer;}
+
+    double getMPB() override {
+        return parent->getMPB();
+    }
+};
+
+struct HitObject {
+    enum HitObjectType {
+        Unknown = 0,
+        HitCircle = 1,
+        Slider = 2,
+        Spinner = 8
+    };
+
+    HitObject(const Coordinate &pos, unsigned long time) : pos(pos), time(time) {}
+
+    virtual HitObjectType getType() { return  HitObjectType::Unknown; }
+
+    Coordinate pos;
+    unsigned long time;
+};
+
+struct HitCircle : HitObject {
+    HitCircle(const Coordinate &pos, unsigned long time) : HitObject(pos, time) {}
+
+    HitObjectType getType() override {
+        return HitObjectType::HitCircle;
+    }
+};
+
+struct Slider : HitObject {
+    Slider(const Coordinate &pos, unsigned long time, int repeat, float pixelLength, Curve &curve)
+            : HitObject(pos, time), repeat(repeat), pixelLength(pixelLength), curve(curve) {}
+
+    HitObjectType getType() override {
+        return HitObjectType::Slider;
+    }
+
+    unsigned long getSliderDuration(float sliderMultiplayer, TimingPoint *tp);
+
+    bool inSlider(unsigned long t, float sliderMultiplayer, TimingPoint *tp);
+
+    Coordinate posAt(unsigned long t, float sliderMultiplayer, TimingPoint *tp);
+
+    int repeat;
+    float pixelLength;
+    Curve curve;
+};
+
+struct Spinner : HitObject {
+    Spinner(const Coordinate &pos, unsigned long time, unsigned long endTime) : HitObject(pos, time),
+                                                                                endTime(endTime) {};
+
+    HitObjectType getType() override {
+        return HitObjectType::Spinner;
+    }
+
+    unsigned long endTime;
 };
 
 struct BeatmapEntry {
-
     std::string title;
     std::string artist;
     std::string creator;
@@ -102,6 +129,8 @@ struct BeatmapEntry {
     int time_total;
 
     std::vector<std::shared_ptr<TimingPoint>> timingpoints;
+
+    std::string getPath(std::string osu_root);
 };
 
 struct Beatmap {
