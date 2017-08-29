@@ -2,6 +2,7 @@
 // Created by egordm on 26-8-2017.
 //
 
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -101,6 +102,7 @@ std::vector<std::string> BeatmapReader::readSection(std::ifstream &file, std::st
     std::string line;
 
     while (utils::getline(file, line) && line != sectionTag) continue;
+    if(file.eof()) throw std::runtime_error("Section not found: " + sectionTag);
     while (utils::getline(file, line) && !line.empty()) {
         ret.push_back(line);
     }
