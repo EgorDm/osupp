@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 namespace utils {
     std::istream& getline(std::istream &is, std::string &t);
@@ -17,6 +18,10 @@ namespace utils {
 
     std::vector<std::string> split(const std::string &str, const std::string &delimeter, const int times);
     inline std::vector<std::string> split(const std::string &str, const std::string &delimeter) {split(str, delimeter, -1);};
+
+    inline float clamp(const float &n, const float &lower, const float &upper) {
+        return std::max(lower, std::min(n, upper));
+    }
 };
 
 
