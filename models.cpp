@@ -17,6 +17,7 @@ bool Slider::inSlider(unsigned long t, float sliderMultiplayer, TimingPoint *tp)
 
 Coordinate Slider::posAt(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
     unsigned long duration = getSliderDuration(sliderMultiplayer, tp);
+    if(duration == 0) return curve.positionAt(0);
     t -= time;
     float at = (t % duration) / duration;
     int r = ((int)floor(t / duration)) % 2;
