@@ -27,6 +27,10 @@ public:
 
     inline CurveType getType() { return type; }
 
+    inline std::vector<Coordinate> getPoints() { return points; }
+
+    inline void setPoints(std::vector<Coordinate> &points) { this->points = points; }
+
 private:
     void calcCumLength();
 
