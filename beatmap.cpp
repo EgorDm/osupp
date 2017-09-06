@@ -52,6 +52,7 @@ void BeatmapReader::readTimingPoints(std::ifstream &file, Beatmap &beatmap) {
             lastKeyPoint = std::make_shared<KeyTimingPoint>(offset, mpb);
             beatmap.timingpoints.push_back(lastKeyPoint);
         } else {
+            if(lastKeyPoint == nullptr) throw std::runtime_error("Beatmap starts with an inherited timing point.");
             auto tp = std::make_shared<InheritedTimingPoint>(offset, mpb / -100);
             tp->parent = lastKeyPoint;
             beatmap.timingpoints.push_back(tp);
@@ -75,6 +76,10 @@ void BeatmapReader::readHitObjects(std::ifstream &file, Beatmap &beatmap) {
                 beatmap.hitobjects.push_back(std::make_shared<Spinner>(pos, time, std::stoi(tokens.at(5))));
             } else if ((type & HitCircle::HitObjectType::Slider) != 0) {
                 float pxLength = std::stof(tokens.at(7));
+                if(pxLength == 0) {
+                    beatmap.hitobjects.push_back(std::make_shared<HitCircle>(pos, time));
+                    continue;
+                }
                 Curve curve = parseCurve(pos, tokens.at(5), pxLength);
                 beatmap.hitobjects.push_back(
                         std::make_shared<Slider>(pos, time, std::stoi(tokens.at(6)), pxLength, curve));
