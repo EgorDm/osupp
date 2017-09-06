@@ -26,6 +26,9 @@ struct Coordinate {
     float length() const;                         //
     float distance(const Coordinate &vec) const;     // distance between two vectors
     Coordinate &normalize();                            //
+    Coordinate &normalize(float xmax, float ymax);
+    Coordinate &clamp(float xmin, float xmax, float ymin, float ymax);
+
     float dot(const Coordinate &vec) const;          // dot product
     bool equal(const Coordinate &vec, float e) const; // compare with epsilon
 
@@ -45,6 +48,9 @@ struct Coordinate {
     bool operator<(const Coordinate &rhs) const;    // comparison for sort
     float operator[](int index) const;            // subscript operator v[0], v[1]
     float &operator[](int index);                  // subscript operator v[0], v[1]
+
+    float *toArray();
+
 
     friend Coordinate operator*(const float a, const Coordinate vec);
 
@@ -69,13 +75,13 @@ namespace maths {
     double clamp(double x, double upper, double lower);
 
     template<class RandomIt, class T>
-    inline RandomIt binary_locate(RandomIt first, RandomIt last, const T& val) {
-        if(val == *first) return first;
+    inline RandomIt binary_locate(RandomIt first, RandomIt last, const T &val) {
+        if (val == *first) return first;
         auto d = std::distance(first, last);
-        if(d==1) return first;
+        if (d == 1) return first;
 
-        auto center = (first + (d/2));
-        if(val < *center) return binary_locate(first, center, val);
+        auto center = (first + (d / 2));
+        if (val < *center) return binary_locate(first, center, val);
         return binary_locate(center, last, val);
     }
 }

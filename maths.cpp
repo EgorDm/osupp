@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include "maths.h"
+#include "utils.h"
 
 Coordinate Coordinate::operator-() const {
     return Coordinate(-x, -y);
@@ -133,6 +134,22 @@ std::ostream &operator<<(std::ostream &os, const Coordinate &vec) {
     return os;
 }
 
+float *Coordinate::toArray() {
+    return new float[2]{x, y};
+}
+
+Coordinate &Coordinate::normalize(const float xmax, const float ymax) {
+    x /= xmax;
+    y /= ymax;
+    return *this;
+}
+
+Coordinate &Coordinate::clamp(const float xmin, const float xmax, const float ymin, const float ymax) {
+    x = utils::clamp(x, xmin, xmax);
+    y = utils::clamp(y, ymin, ymax);
+    return *this;
+}
+
 namespace maths {
     const float TOLERANCE_SQ = 0.25f * 0.25f;
 
@@ -168,7 +185,8 @@ namespace maths {
         return true;
     }
 
-    void approximate(Coords &controlPoints, Coords &output, unsigned long pointsCount, Coords &subdivisionBuffer1, Coords &subdivisionBuffer2) {
+    void approximate(Coords &controlPoints, Coords &output, unsigned long pointsCount, Coords &subdivisionBuffer1,
+                     Coords &subdivisionBuffer2) {
         std::vector<Coordinate> &l = subdivisionBuffer2;
         std::vector<Coordinate> &r = subdivisionBuffer1;
 
