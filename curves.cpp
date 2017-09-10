@@ -9,6 +9,11 @@
 
 using namespace maths;
 
+Curve::Curve(const std::vector<Coordinate> &points, double length) : points(points), lenOrigin(length) {
+
+}
+
+
 Curve::Curve(CurveType type, const std::vector<Coordinate> &points, double length) : type(type), lenOrigin(length) {
     switch (type) {
         case Linear:

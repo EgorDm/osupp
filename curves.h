@@ -11,6 +11,7 @@
 class Curve {
 public:
     enum CurveType {
+        None = 'N',
         Linear = 'L',
         Bezier = 'B',
         Perfect = 'P',
@@ -19,7 +20,7 @@ public:
 
     explicit Curve(CurveType type, const std::vector<Coordinate> &points, double length);
 
-    Curve() {};
+    Curve(const std::vector<Coordinate> &points, double length);
 
     Coordinate positionAt(float progress);
 
@@ -40,7 +41,7 @@ private:
 
     Coordinate interpolateVertices(int i, double d);
 
-    CurveType type;
+    CurveType type = None;
     std::vector<Coordinate> points;
     std::vector<double> cumLength;
     double lenOrigin = 0;
