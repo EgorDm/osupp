@@ -3,6 +3,7 @@
 //
 
 #include <sstream>
+#include <iostream>
 #include "models.h"
 
 std::string BeatmapEntry::getPath(std::string osu_root) {
@@ -19,7 +20,7 @@ Coordinate Slider::posAt(unsigned long t, float sliderMultiplayer, TimingPoint *
     unsigned long duration = getSliderDuration(sliderMultiplayer, tp);
     if(duration == 0) return curve.positionAt(0);
     t -= time;
-    float at = (t % duration) / duration;
+    float at = (float)(t % duration) / duration;
     int r = ((int)floor(t / duration)) % 2;
     return curve.positionAt(std::abs(r - at));
 }
