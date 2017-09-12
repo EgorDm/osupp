@@ -57,7 +57,6 @@ namespace osupp {
 
     void BeatmapFile::writeSection(const std::string &sectionTag, const std::vector<std::string> &content) {
         if (getMode() != Mode::Write) throw std::runtime_error("File is not in write mode.");
-        file.seekg(std::ios::end);
         file << std::endl << sectionTag << std::endl;
         for (const auto &line : content) file << line << std::endl;
     }

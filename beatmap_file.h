@@ -37,6 +37,8 @@ namespace osupp {
 
         void setMode(Mode mode);
 
+        inline void close() { file.close(); }
+
     private:
         std::string path;
         Mode mode;
