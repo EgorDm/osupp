@@ -5,13 +5,10 @@
 #include <iostream>
 #include "utils.h"
 
-
 namespace utils {
     std::istream &getline(std::istream &is, std::string &t) {
         t.clear();
-        std::istream::sentry se(is, true);
         std::streambuf *sb = is.rdbuf();
-
         for (;;) {
             int c = sb->sbumpc();
             switch (c) {
@@ -33,9 +30,9 @@ namespace utils {
 
     std::vector<std::string> split(const std::string &str, const std::string &delimeter, const int times) {
         const auto pos = str.find(delimeter);
-        if(pos == std::string::npos) return {str};
+        if (pos == std::string::npos) return {str};
 
-        std::vector<std::string> ret {str.substr(0, pos)};
+        std::vector<std::string> ret{str.substr(0, pos)};
         auto tail = split(str.substr(pos + delimeter.size(), std::string::npos), delimeter, times);
         ret.insert(ret.end(), tail.begin(), tail.end());
 
