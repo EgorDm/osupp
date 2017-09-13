@@ -31,7 +31,7 @@ namespace osupp {
 
     long BeatmapFile::nextSection(std::string &sectionTag) {
         std::string line;
-        while (utils::getline(file, line) && !line.empty() && line.at(0) != '[' && line.at(line.length() - 1) != ']');
+        while (utils::getline(file, line) && !file.eof() && line.front() != '[' && line.back() != ']') continue;
         sectionTag = line;
         return file.eof() ? std::ios::end : file.tellg();
     }
