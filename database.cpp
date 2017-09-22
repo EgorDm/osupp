@@ -135,7 +135,7 @@ namespace osupp {
             return new KeyTimingPoint(offset, mpb);
         }
 
-        return new InheritedTimingPoint(offset, static_cast<float>(mpb / -100));
+        return new InheritedTimingPoint(offset, static_cast<float>(-100 / mpb));
     }
 
     std::map<int, double> OsuDB::readDiffPairs() {

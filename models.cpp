@@ -15,7 +15,7 @@ namespace osupp {
     }
 
     bool Slider::inSlider(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
-        return t > time && t < time + getSliderDuration(sliderMultiplayer, tp) * repeat;
+        return t >= time && t <= time + getSliderDuration(sliderMultiplayer, tp) * repeat;
     }
 
     Coordinate Slider::posAt(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
@@ -28,7 +28,7 @@ namespace osupp {
     }
 
     unsigned long Slider::getSliderDuration(float sliderMultiplayer, TimingPoint *tp) {
-        double velocity = 100 * sliderMultiplayer / tp->sliderMultiplayer / tp->getMPB();
-        return static_cast<unsigned long>(pixelLength / velocity);
+        double velocity = 100 * sliderMultiplayer / tp->getMPB() * tp->sliderMultiplayer;
+        return static_cast<unsigned long>(ceil(pixelLength / velocity));
     }
 }

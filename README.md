@@ -13,5 +13,5 @@ for(BeatmapEntry tp : reader.entries) {
 
 Reading beatmap
 ```cpp
-Beatmap bm = BeatmapReader::read("F:\\Osu\\Songs\\407484 Demetori - Gensou, Yume no Owari\\Demetori - Gensou, Yume no Owari (GoldenWolf) [Genjitsu no Hajimari].osu");
+Beatmap bm = BeatmapFile::read("F:\\Osu\\Songs\\407484 Demetori - Gensou, Yume no Owari\\Demetori - Gensou, Yume no Owari (GoldenWolf) [Genjitsu no Hajimari].osu");
 ```

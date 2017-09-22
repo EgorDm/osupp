@@ -57,13 +57,16 @@ namespace osupp {
         }
 
         inline void parse(const std::string &value, std::shared_ptr<TimingPoint> &target) {
-            int offset;
+            int offset; // TODO: bit inconsistent are we?
             float mpb;
-            auto tokens = utils::split(value, ",", 3);
+            unsigned int meter = 4;
+            auto tokens = utils::split(value, ",", 4);
             parse(tokens.at(0), offset);
             parse(tokens.at(1), mpb);
+            if(tokens.size() > 3) parse(tokens.at(2), meter);
             if (mpb > 0) target = std::make_shared<KeyTimingPoint>(offset, mpb);
-            else target = std::make_shared<InheritedTimingPoint>(offset, mpb / -100);
+            else target = std::make_shared<InheritedTimingPoint>(offset, -100 / mpb);
+            target->meter = meter;
         }
 
         inline Curve parse(const std::string &value, const Coordinate &pos, const float &pxLength) {
@@ -93,7 +96,7 @@ namespace osupp {
                 float pxLength = std::stof(tokens.at(7));
                 if (pxLength == 0) {
                     target = std::make_shared<HitCircle>(pos, time);
-                    return;
+                    throw new std::runtime_error("Slider has no length!");
                 }
                 Curve curve = parse(tokens.at(5), pos, pxLength);
                 target = std::make_shared<Slider>(pos, time, std::stoi(tokens.at(6)), pxLength, curve);

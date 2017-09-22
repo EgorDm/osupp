@@ -17,6 +17,7 @@ namespace osupp {
     struct TimingPoint {
         double offset = 0;
         float sliderMultiplayer = 1;
+        unsigned int meter = 4;
 
         TimingPoint() = default;
 
