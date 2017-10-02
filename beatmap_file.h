@@ -101,6 +101,7 @@ namespace osupp {
                 Curve curve = parse(tokens.at(5), pos, pxLength);
                 target = std::make_shared<Slider>(pos, time, std::stoi(tokens.at(6)), pxLength, curve);
             }
+            target->new_combo = (type & HitCircle::HitObjectType::NewCombo) != 0;
         }
 
         template<typename T>

@@ -56,6 +56,7 @@ namespace osupp {
             Unknown = 0,
             HitCircle = 1,
             Slider = 2,
+            NewCombo = 4,
             Spinner = 8
         };
 
@@ -65,6 +66,7 @@ namespace osupp {
 
         Coordinate pos;
         unsigned long time;
+        bool new_combo = false;
     };
 
     struct HitCircle : HitObject {
