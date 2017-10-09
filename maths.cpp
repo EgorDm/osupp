@@ -123,6 +123,10 @@ namespace osupp {
         return (x * rhs.x + y * rhs.y);
     }
 
+    float Coordinate::cross(const Coordinate &rhs) const {
+        return (x * rhs.y - y * rhs.x);
+    }
+
     bool Coordinate::equal(const Coordinate &rhs, float epsilon) const {
         return fabs(x - rhs.x) < epsilon && fabs(y - rhs.y) < epsilon;
     }

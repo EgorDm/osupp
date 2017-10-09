@@ -5,6 +5,7 @@
 #ifndef OSUPP_MATHS_H
 #define OSUPP_MATHS_H
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <vector>
 #include <ostream>
@@ -33,6 +34,7 @@ namespace osupp {
         Coordinate &clamp(float xmin, float xmax, float ymin, float ymax);
 
         float dot(const Coordinate &vec) const;          // dot product
+        float cross(const Coordinate &vec) const;
         bool equal(const Coordinate &vec, float e) const; // compare with epsilon
 
         Coordinate operator-() const;                      // unary operator (negate)
@@ -53,7 +55,6 @@ namespace osupp {
         float &operator[](int index);                  // subscript operator v[0], v[1]
 
         float *toArray();
-
 
         friend Coordinate operator*(const float a, const Coordinate vec);
 
