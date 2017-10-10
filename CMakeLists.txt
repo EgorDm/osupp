@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 project(osupp)
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCES models.cpp database.cpp maths.cpp curves.cpp beatmap_file.cpp utils.cpp)
+set(SOURCES models.cpp database.cpp maths.cpp curves.cpp utils.cpp beatmap_io.cpp)
 if (BUILD_LIBRARY)
     add_library(osupp ${SOURCES})
 elseif (BUILD_PYTHON)

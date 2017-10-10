@@ -1,27 +1,22 @@
 //
-// Created by egordm on 11-9-2017.
+// Created by egordm on 9-10-2017.
 //
 
-#ifndef OSUPP_BEATMAP_FILE_H
-#define OSUPP_BEATMAP_FILE_H
+#ifndef OSUPP_BEATMAP_IO_H
+#define OSUPP_BEATMAP_IO_H
 
-#include <string>
-#include <fstream>
-#include <vector>
+
+#include <istream>
 #include <map>
+#include <vector>
 #include <sstream>
-#include "curves.h"
 #include "models.h"
 #include "utils.h"
 
 namespace osupp {
-    class BeatmapFile {
+    class BeatmapReader {
     public:
-        enum Mode {
-            Read, Write
-        };
-
-        explicit BeatmapFile(const std::string &path, Mode mode);
+        explicit BeatmapReader(std::istream &is);
 
         long findSection(const std::string &sectionTag);
 
@@ -31,18 +26,18 @@ namespace osupp {
 
         std::map<std::string, std::string> readAttributeSection(const std::string &sectionTag);
 
+    private:
+        std::istream &is;
+    };
+
+    class BeatmapWriter {
+    public:
+        explicit BeatmapWriter(std::ostream &os);
+
         void writeSection(const std::string &sectionTag, const std::vector<std::string> &content);
 
-        Mode getMode() const;
-
-        void setMode(Mode mode);
-
-        inline void close() { file.close(); }
-
     private:
-        std::string path;
-        Mode mode;
-        std::fstream file;
+        std::ostream &os;
     };
 
     namespace reading {
@@ -115,5 +110,4 @@ namespace osupp {
     }
 }
 
-
-#endif //OSUPP_BEATMAP_FILE_H
+#endif //OSUPP_BEATMAP_IO_H
