@@ -1,10 +1,9 @@
 #include <iostream>
-#include "../library/database.h"
-#include "../library/maths.h"
-#include "../library/curves.h"
-//#include "beatmap.h"
-#include "../library/utils.h"
-#include "../library/beatmap_io.h"
+#include "database.h"
+#include "maths.h"
+#include "curves.h"
+#include "utils.h"
+#include "beatmap_io.h"
 
 using namespace osupp;
 
