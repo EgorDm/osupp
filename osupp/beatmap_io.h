@@ -40,13 +40,13 @@ namespace osupp {
         std::ostream &os;
     };
 
-    const uint8_t META_SECTION = 1<<0;
-    const uint8_t DIFFICULTY_SECTION = 1<<1;
-    const uint8_t TIMING_SECTION = 1<<2;
-    const uint8_t HITOBJECT_SECTION = 1<<3;
-    const uint8_t ALL_SECTIONS = META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION | HITOBJECT_SECTION;
+    const unsigned int META_SECTION = 1<<0;
+    const unsigned int DIFFICULTY_SECTION = 1<<1;
+    const unsigned int TIMING_SECTION = 1<<2;
+    const unsigned int HITOBJECT_SECTION = 1<<3;
+    const unsigned int ALL_SECTIONS = META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION | HITOBJECT_SECTION;
 
-    Beatmap read_beatmap(std::string file, uint8_t read_flags = ALL_SECTIONS);
+    Beatmap read_beatmap(std::string file, unsigned int read_flags = ALL_SECTIONS);
 
     namespace reading {
         template<typename T>
