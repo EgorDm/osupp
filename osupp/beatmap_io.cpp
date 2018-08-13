@@ -98,49 +98,60 @@ namespace osupp {
     }
 
     Beatmap read_beatmap(std::string file, uint8_t read_flags) {
-        std::ifstream ifile(R"(D:\Developent\CPP\osupp\test.txt)"); // TODO: close
+        std::ifstream ifile(file); // TODO: close
         if(!ifile.is_open()) throw std::runtime_error("Could not open file " + file);
 
         Beatmap ret;
-        BeatmapReader reader(ifile);
 
-        if(read_flags & META_SECTION) {
-            auto meta = reader.read_attribute_section("[Metadata]");
-            ret.title = meta.at("Title");
-            ret.artist = meta.at("Artist");
-            ret.creator = meta.at("Creator");
-            ret.version = meta.at("Version");
-            ret.id = stoi(meta.at("BeatmapID"));
-            ret.set_id = stoi(meta.at("BeatmapSetID"));
-        }
-
-        if(read_flags & DIFFICULTY_SECTION) {
-            auto difficulty = reader.read_attribute_section("[Difficulty]");
-            ret.hp = stof(difficulty.at("HPDrainRate"));
-            ret.cs = stof(difficulty.at("CircleSize"));
-            ret.od = stof(difficulty.at("OverallDifficulty"));
-            ret.ar = stof(difficulty.at("ApproachRate"));
-            ret.slider_multiplayer = stof(difficulty.at("SliderMultiplier"));
-            ret.slider_tick_rate = stof(difficulty.at("SliderTickRate"));
-        }
-
-        if(read_flags & TIMING_SECTION) {
-            auto timings = reader.read_section("[TimingPoints]");
-            for (const std::string &v : timings) {
-                std::shared_ptr<TimingPoint> t;
-                reading::parse(v, t);
-                ret.timingpoints.push_back(t);
+        try {
+            BeatmapReader reader(ifile);
+            if (read_flags & META_SECTION) {
+                auto meta = reader.read_attribute_section("[Metadata]");
+                ret.title = meta.at("Title");
+                ret.artist = meta.at("Artist");
+                ret.creator = meta.at("Creator");
+                ret.version = meta.at("Version");
+                ret.id = stoi(meta.at("BeatmapID"));
+                ret.set_id = stoi(meta.at("BeatmapSetID"));
             }
-        }
 
-        if(read_flags & HITOBJECT_SECTION) {
-            auto hitobjects = reader.read_section("[HitObjects]");
-            for (const std::string &v : hitobjects) {
-                std::shared_ptr<HitObject> t;
-                reading::parse(v, t);
-                ret.hitobjects.push_back(t);
+            if (read_flags & DIFFICULTY_SECTION) {
+                auto difficulty = reader.read_attribute_section("[Difficulty]");
+                ret.hp = stof(difficulty.at("HPDrainRate"));
+                ret.cs = stof(difficulty.at("CircleSize"));
+                ret.od = stof(difficulty.at("OverallDifficulty"));
+                ret.ar = stof(difficulty.at("ApproachRate"));
+                ret.slider_multiplayer = stof(difficulty.at("SliderMultiplier"));
+                ret.slider_tick_rate = stof(difficulty.at("SliderTickRate"));
             }
-        }
+
+            if (read_flags & TIMING_SECTION) {
+                auto timings = reader.read_section("[TimingPoints]");
+                KeyTimingPoint *ktp = nullptr;
+
+                for (int i = 0; i < timings.size(); ++i) {
+                    std::shared_ptr<TimingPoint> t;
+                    reading::parse(timings[i], t);
+
+                    auto *tkp = dynamic_cast<KeyTimingPoint *>(t.get());
+                    if (tkp) ktp = tkp;
+
+                    auto *itp = dynamic_cast<InheritedTimingPoint *>(t.get());
+                    if (itp) itp->parent = ktp;
+
+                    ret.timingpoints.push_back(t);
+                }
+            }
+
+            if (read_flags & HITOBJECT_SECTION) {
+                auto hitobjects = reader.read_section("[HitObjects]");
+                for (const std::string &v : hitobjects) {
+                    std::shared_ptr<HitObject> t;
+                    reading::parse(v, t);
+                    ret.hitobjects.push_back(t);
+                }
+            }
+        } catch (...) {}
 
         ifile.close();
         return ret;

@@ -38,12 +38,12 @@ namespace osupp {
     };
 
     struct InheritedTimingPoint : TimingPoint {
-        std::shared_ptr<KeyTimingPoint> parent;
+        KeyTimingPoint* parent;
 
         InheritedTimingPoint() = default;
 
-        InheritedTimingPoint(double offset, float sliderMultiplayer) : TimingPoint(
-                offset) { this->sliderMultiplayer = sliderMultiplayer; }
+        InheritedTimingPoint(double offset, float slider_multiplayer) : TimingPoint(
+                offset) { this->sliderMultiplayer = slider_multiplayer; }
 
         double getMPB() override {
             return parent->getMPB();
