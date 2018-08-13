@@ -2,28 +2,29 @@
 // Created by egordm on 9-10-2017.
 //
 
+#include <fstream>
 #include "beatmap_io.h"
 #include "utils.h"
 
 namespace osupp {
     BeatmapReader::BeatmapReader(std::istream &is) : is(is) {}
 
-    long BeatmapReader::find_section(const std::string &sectionTag) {
+    long BeatmapReader::find_section(const std::string &section_tag) {
         is.seekg(std::ios::beg);
         std::string line;
-        while (utils::getline(is, line) && !is.eof() && line != sectionTag) continue;
+        while (utils::getline(is, line) && !is.eof() && line != section_tag) continue;
         return is.eof() ? std::ios::end : is.tellg();
     }
 
-    long BeatmapReader::next_section(std::string &sectionTag) {
+    long BeatmapReader::next_section(std::string &section_tag) {
         std::string line;
         while (utils::getline(is, line) && !is.eof() && line.front() != '[' && line.back() != ']') continue;
-        sectionTag = line;
+        section_tag = line;
         return is.eof() ? std::ios::end : is.tellg();
     }
 
-    std::vector<std::string> BeatmapReader::readSection(const std::string &sectionTag) {
-        if (find_section(sectionTag) == std::ios::end) throw std::runtime_error("Section not found: " + sectionTag);
+    std::vector<std::string> BeatmapReader::read_section(const std::string &section_tag) {
+        if (find_section(section_tag) == std::ios::end) throw std::runtime_error("Section not found: " + section_tag);
         std::vector<std::string> ret;
         std::string line;
 
@@ -31,9 +32,9 @@ namespace osupp {
         return ret;
     }
 
-    std::map<std::string, std::string> BeatmapReader::read_attribute_section(const std::string &sectionTag) {
+    std::map<std::string, std::string> BeatmapReader::read_attribute_section(const std::string &section_tag) {
         std::map<std::string, std::string> ret;
-        for (const auto &line : readSection(sectionTag)) {
+        for (const auto &line : read_section(section_tag)) {
             unsigned long pos = line.find(':');
             if (pos != std::string::npos)
                 ret[line.substr(0, pos)] = line.substr(pos + 1, line.size() - pos);
@@ -43,7 +44,7 @@ namespace osupp {
 
     BeatmapWriter::BeatmapWriter(std::ostream &os) : os(os) {}
 
-    void BeatmapWriter::writeSection(const std::string &sectionTag, const std::vector<std::string> &content) {
+    void BeatmapWriter::write_section(const std::string &sectionTag, const std::vector<std::string> &content) {
         os << std::endl << sectionTag << std::endl;
         for (const auto &line : content) os << line << std::endl;
     }
@@ -94,5 +95,54 @@ namespace osupp {
             target = std::make_shared<Slider>(pos, time, std::stoi(tokens.at(6)), pxLength, curve);
         }
         target->new_combo = (type & HitCircle::HitObjectType::NewCombo) != 0;
+    }
+
+    Beatmap read_beatmap(std::string file, uint8_t read_flags) {
+        std::ifstream ifile(R"(D:\Developent\CPP\osupp\test.txt)"); // TODO: close
+        if(!ifile.is_open()) throw std::runtime_error("Could not open file " + file);
+
+        Beatmap ret;
+        BeatmapReader reader(ifile);
+
+        if(read_flags & META_SECTION) {
+            auto meta = reader.read_attribute_section("[Metadata]");
+            ret.title = meta.at("Title");
+            ret.artist = meta.at("Artist");
+            ret.creator = meta.at("Creator");
+            ret.version = meta.at("Version");
+            ret.id = stoi(meta.at("BeatmapID"));
+            ret.set_id = stoi(meta.at("BeatmapSetID"));
+        }
+
+        if(read_flags & DIFFICULTY_SECTION) {
+            auto difficulty = reader.read_attribute_section("[Difficulty]");
+            ret.hp = stof(difficulty.at("HPDrainRate"));
+            ret.cs = stof(difficulty.at("CircleSize"));
+            ret.od = stof(difficulty.at("OverallDifficulty"));
+            ret.ar = stof(difficulty.at("ApproachRate"));
+            ret.slider_multiplayer = stof(difficulty.at("SliderMultiplier"));
+            ret.slider_tick_rate = stof(difficulty.at("SliderTickRate"));
+        }
+
+        if(read_flags & TIMING_SECTION) {
+            auto timings = reader.read_section("[TimingPoints]");
+            for (const std::string &v : timings) {
+                std::shared_ptr<TimingPoint> t;
+                reading::parse(v, t);
+                ret.timingpoints.push_back(t);
+            }
+        }
+
+        if(read_flags & HITOBJECT_SECTION) {
+            auto hitobjects = reader.read_section("[HitObjects]");
+            for (const std::string &v : hitobjects) {
+                std::shared_ptr<HitObject> t;
+                reading::parse(v, t);
+                ret.hitobjects.push_back(t);
+            }
+        }
+
+        ifile.close();
+        return ret;
     }
 }

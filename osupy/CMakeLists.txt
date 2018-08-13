@@ -1,4 +1,4 @@
-project(tempo_estimation_py C CXX)
+project(osupy C CXX)
 
 file(GLOB SOURCE_FILES
         "*.h"

@@ -18,13 +18,13 @@ namespace osupp {
     public:
         explicit BeatmapReader(std::istream &is);
 
-        long find_section(const std::string &sectionTag);
+        long find_section(const std::string &section_tag);
 
-        long next_section(std::string &sectionTag);
+        long next_section(std::string &section_tag);
 
-        std::vector<std::string> readSection(const std::string &sectionTag);
+        std::vector<std::string> read_section(const std::string &section_tag);
 
-        std::map<std::string, std::string> read_attribute_section(const std::string &sectionTag);
+        std::map<std::string, std::string> read_attribute_section(const std::string &section_tag);
 
     private:
         std::istream &is;
@@ -34,11 +34,19 @@ namespace osupp {
     public:
         explicit BeatmapWriter(std::ostream &os);
 
-        void writeSection(const std::string &sectionTag, const std::vector<std::string> &content);
+        void write_section(const std::string &sectionTag, const std::vector<std::string> &content);
 
     private:
         std::ostream &os;
     };
+
+    const uint8_t META_SECTION = 1<<0;
+    const uint8_t DIFFICULTY_SECTION = 1<<1;
+    const uint8_t TIMING_SECTION = 1<<2;
+    const uint8_t HITOBJECT_SECTION = 1<<3;
+    const uint8_t ALL_SECTIONS = META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION | HITOBJECT_SECTION;
+
+    Beatmap read_beatmap(std::string file, uint8_t read_flags = ALL_SECTIONS);
 
     namespace reading {
         template<typename T>

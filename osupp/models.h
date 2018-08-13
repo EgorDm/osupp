@@ -13,7 +13,6 @@
 
 
 namespace osupp {
-
     struct TimingPoint {
         double offset = 0;
         float sliderMultiplayer = 1;
@@ -154,8 +153,8 @@ namespace osupp {
         float hp;
         float od;
 
-        float sliderMultiplayer;
-        float sliderTickRate;
+        float slider_multiplayer;
+        float slider_tick_rate;
 
         std::vector<std::shared_ptr<TimingPoint>> timingpoints;
         std::vector<std::shared_ptr<HitObject>> hitobjects;
