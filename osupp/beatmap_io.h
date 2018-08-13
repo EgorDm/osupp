@@ -46,7 +46,7 @@ namespace osupp {
     const unsigned int HITOBJECT_SECTION = 1<<3;
     const unsigned int ALL_SECTIONS = META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION | HITOBJECT_SECTION;
 
-    Beatmap read_beatmap(std::string file, unsigned int read_flags = ALL_SECTIONS);
+    Beatmap read_beatmap(const std::string &file, unsigned int read_flags = ALL_SECTIONS);
 
     namespace reading {
         template<typename T>

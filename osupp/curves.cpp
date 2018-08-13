@@ -35,7 +35,7 @@ namespace osupp {
         }
     }
 
-    void Curve::calcCumLength() {
+    void Curve::calc_cum_length() {
 
         double l = 0;
         cum_length.clear();
@@ -60,17 +60,17 @@ namespace osupp {
         }
     }
 
-    int Curve::indexOfDistance(double d) {
+    int Curve::index_of_distance(double d) {
         int i = static_cast<int>(maths::binary_locate(cum_length.begin(), cum_length.end(), d) - cum_length.begin());
         if (i < 0) i = ~i;
         return i;
     }
 
-    double Curve::progressToDistance(float progress) {
+    double Curve::progress_to_distance(float progress) {
         return maths::clamp(progress, 0, 1) * px_length;
     }
 
-    Coordinate Curve::interpolateVertices(int i, double d) {
+    Coordinate Curve::interpolate_vertices(int i, double d) {
         if (points.size() == 0)
             return Coordinate();
 
@@ -92,11 +92,11 @@ namespace osupp {
         return p0 + (p1 - p0) * (float) w;
     }
 
-    Coordinate Curve::positionAt(float progress) {
-        if (cum_length.empty()) calcCumLength();
+    Coordinate Curve::position_at(float progress) {
+        if (cum_length.empty()) calc_cum_length();
 
-        double d = progressToDistance(progress);
-        return interpolateVertices(indexOfDistance(d), d);
+        double d = progress_to_distance(progress);
+        return interpolate_vertices(index_of_distance(d), d);
     }
 
     double Curve::length() {

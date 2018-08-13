@@ -24,24 +24,24 @@ namespace osupp {
 
         Curve(const std::vector<Coordinate> &points, double length);
 
-        Coordinate positionAt(float progress);
+        Coordinate position_at(float progress);
 
         double length();
 
-        inline CurveType getType() { return type; }
+        inline CurveType get_type() { return type; }
 
-        inline std::vector<Coordinate> getPoints() { return points; }
+        inline std::vector<Coordinate> get_points() { return points; }
 
-        inline void setPoints(std::vector<Coordinate> &points) { this->points = points; }
+        inline void set_points(std::vector<Coordinate> &points) { this->points = points; }
 
     private:
-        void calcCumLength();
+        void calc_cum_length();
 
-        int indexOfDistance(double d);
+        int index_of_distance(double d);
 
-        double progressToDistance(float progress);
+        double progress_to_distance(float progress);
 
-        Coordinate interpolateVertices(int i, double d);
+        Coordinate interpolate_vertices(int i, double d);
 
         CurveType type = None;
         std::vector<Coordinate> points;

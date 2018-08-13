@@ -97,7 +97,7 @@ namespace osupp {
         target->new_combo = (type & HitCircle::HitObjectType::NewCombo) != 0;
     }
 
-    Beatmap read_beatmap(std::string file, unsigned int read_flags) {
+    Beatmap read_beatmap(const std::string &file, unsigned int read_flags) {
         std::ifstream ifile(file); // TODO: close
         if(!ifile.is_open()) throw std::runtime_error("Could not open file " + file);
 

@@ -15,7 +15,7 @@
 namespace osupp {
     struct TimingPoint {
         double offset = 0;
-        float sliderMultiplayer = 1;
+        float slider_multiplayer = 1;
         unsigned int meter = 4;
 
         TimingPoint() = default;
@@ -38,12 +38,12 @@ namespace osupp {
     };
 
     struct InheritedTimingPoint : TimingPoint {
-        KeyTimingPoint* parent;
+        KeyTimingPoint* parent; // TODO: this is good and bad. If beatmap is deleted  -> rip
 
         InheritedTimingPoint() = default;
 
         InheritedTimingPoint(double offset, float slider_multiplayer) : TimingPoint(
-                offset) { this->sliderMultiplayer = slider_multiplayer; }
+                offset) { this->slider_multiplayer = slider_multiplayer; }
 
         double get_mpb() override {
             return parent->get_mpb();
@@ -77,33 +77,33 @@ namespace osupp {
     };
 
     struct Slider : HitObject {
-        Slider(const Coordinate &pos, unsigned long time, int repeat, float pixelLength, Curve &curve)
-                : HitObject(pos, time), repeat(repeat), pixelLength(pixelLength), curve(curve) {}
+        Slider(const Coordinate &pos, unsigned long time, int repeat, float pixel_length, Curve &curve)
+                : HitObject(pos, time), repeat(repeat), pixel_length(pixel_length), curve(curve) {}
 
         HitObjectType get_type() override {
             return HitObjectType::Slider;
         }
 
-        unsigned long getSliderDuration(float sliderMultiplayer, TimingPoint *tp);
+        unsigned long get_slider_duration(float sliderMultiplayer, TimingPoint *tp);
 
         bool in_slider(unsigned long t, float sliderMultiplayer, TimingPoint *tp);
 
         Coordinate pos_at(unsigned long t, float sliderMultiplayer, TimingPoint *tp);
 
         int repeat;
-        float pixelLength;
+        float pixel_length;
         Curve curve;
     };
 
     struct Spinner : HitObject {
-        Spinner(const Coordinate &pos, unsigned long time, unsigned long endTime) : HitObject(pos, time),
-                                                                                    endTime(endTime) {};
+        Spinner(const Coordinate &pos, unsigned long time, unsigned long end_time) : HitObject(pos, time),
+                                                                                    end_time(end_time) {};
 
         HitObjectType get_type() override {
             return HitObjectType::Spinner;
         }
 
-        unsigned long endTime;
+        unsigned long end_time;
     };
 
     struct BeatmapEntry {
