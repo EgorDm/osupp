@@ -8,17 +8,17 @@
 
 namespace osupp {
 
-    std::string BeatmapEntry::getPath(std::string osu_root) {
+    std::string BeatmapEntry::get_path(std::string osu_root) {
         std::ostringstream ret(osu_root);
         ret << "\\" << "Songs" << "\\" << folder_name << "\\" << osu_file;
         return ret.str();
     }
 
-    bool Slider::inSlider(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
+    bool Slider::in_slider(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
         return t >= time && t <= time + getSliderDuration(sliderMultiplayer, tp) * repeat;
     }
 
-    Coordinate Slider::posAt(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
+    Coordinate Slider::pos_at(unsigned long t, float sliderMultiplayer, TimingPoint *tp) {
         unsigned long duration = getSliderDuration(sliderMultiplayer, tp);
         if (duration == 0) return curve.positionAt(0);
         t -= time;
@@ -28,7 +28,7 @@ namespace osupp {
     }
 
     unsigned long Slider::getSliderDuration(float sliderMultiplayer, TimingPoint *tp) {
-        double velocity = 100 * sliderMultiplayer / tp->getMPB() * tp->sliderMultiplayer;
+        double velocity = 100 * sliderMultiplayer / tp->get_mpb() * tp->sliderMultiplayer;
         return static_cast<unsigned long>(ceil(pixelLength / velocity));
     }
 }
