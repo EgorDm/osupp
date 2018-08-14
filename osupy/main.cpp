@@ -10,6 +10,14 @@ using namespace osupp;
 PYBIND11_MODULE(osupy, m) {
     m.doc() = R"pbdoc(
         Library with tools for processing osu files
+        -----------------------
+
+        .. currentmodule:: osupy
+
+        .. autosummary::
+           :toctree: _generate
+
+           read_beatmap
     )pbdoc";
 
     py::class_<OsuDB>(m, "OsuDB")
@@ -117,4 +125,10 @@ PYBIND11_MODULE(osupy, m) {
           py::arg("file"),
           py::arg("read_flags") = ALL_SECTIONS
     );
+
+#ifdef VERSION_INFO
+    m.attr("__version__") = VERSION_INFO;
+#else
+    m.attr("__version__") = "dev";
+#endif
 }
