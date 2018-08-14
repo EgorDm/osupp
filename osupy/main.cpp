@@ -25,6 +25,8 @@ PYBIND11_MODULE(osupy, m) {
     py::class_<OsuDB>(m, "OsuDB")
             .def(py::init<const std::string &>())
             .def("read", &OsuDB::read)
+            .def_readonly("version", &OsuDB::version)
+            .def_readonly("user", &OsuDB::user)
             .def_readonly("entries", &OsuDB::entries);
 
     py::class_<BeatmapEntry>(m, "BeatmapEntry")

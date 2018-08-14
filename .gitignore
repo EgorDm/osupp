@@ -47,4 +47,7 @@ gen
 docs/_build
 docs/_generate
 
-dist
+dist/
+
+build/
+osupy.egg-info/
