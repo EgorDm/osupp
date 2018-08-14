@@ -7,7 +7,11 @@ Library with tools to modify osu beatmap and database files.
 
 ## [Python Documentation](https://osupp.readthedocs.io/en/latest/)
 
-# How to build
+## Installation
+### Python
+`pip install osuppy`
+
+## How to build
 Clone the repo
 ```commandline
 git clone git@github.com:EgorDm/osupp.git --recursive
