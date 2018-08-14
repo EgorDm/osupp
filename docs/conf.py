@@ -39,7 +39,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'osupy'
+project = u'osuppy'
 copyright = u'2018, Egor Dmitriev'
 author = u'Egor Dmitriev'
 
@@ -215,7 +215,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'osupy.tex', u'osupy Documentation',
+    (master_doc, 'osuppy.tex', u'osuppy Documentation',
      u'Egor Dmitriev', 'manual'),
 ]
 
@@ -245,7 +245,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'osupy', u'osupy Documentation',
+    (master_doc, 'osuppy', u'osuppy Documentation',
      [author], 1)
 ]
 
@@ -259,8 +259,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'osupy', u'osupy Documentation',
-     author, 'osupy', 'Library with utilities to modify osu files.',
+    (master_doc, 'osuppy', u'osuppy Documentation',
+     author, 'osuppy', 'Library with utilities to modify osu files.',
      'Miscellaneous'),
 ]
 

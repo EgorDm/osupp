@@ -60,10 +60,10 @@ class CMakeBuild(build_ext):
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.', '--target', 'osupy'] + build_args, cwd=self.build_temp)
+        subprocess.check_call(['cmake', '--build', '.', '--target', 'osuppy'] + build_args, cwd=self.build_temp)
 
 
-name = 'osupy'
+name = 'osuppy'
 version = '1.0.0'
 release = '1.0.0'
 
@@ -81,7 +81,7 @@ setup(name=name,
       long_description_content_type='text/markdown',
       url='https://github.com/EgorDm/osupp',
       license='MIT',
-      ext_modules=[CMakeExtension('osupy')],
+      ext_modules=[CMakeExtension('osuppy')],
       cmdclass=cmdclass,
       zip_safe=False,
       command_options={

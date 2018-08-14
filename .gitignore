@@ -50,4 +50,4 @@ docs/_generate
 dist/
 
 build/
-osupy.egg-info/
+osuppy.egg-info/

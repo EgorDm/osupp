@@ -7,12 +7,12 @@ namespace py = pybind11;
 using namespace std;
 using namespace osupp;
 
-PYBIND11_MODULE(osupy, m) {
+PYBIND11_MODULE(osuppy, m) {
     m.doc() = R"pbdoc(
         osupp
         -----------------------
 
-        .. currentmodule:: osupy
+        .. currentmodule:: osuppy
 
         .. autosummary::
            :toctree: _generate
@@ -169,7 +169,7 @@ PYBIND11_MODULE(osupy, m) {
 
                 .. code-block:: python
 
-                   beatmap = osupy.read_beatmap("./Cool Songs.osu", META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION)
+                   beatmap = osuppy.read_beatmap("./Cool Songs.osu", META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION)
 
           )pbdoc",
           py::arg("file"),

@@ -9,5 +9,5 @@ if (WIN32)
 endif ()
 
 add_subdirectory(osupp)
+add_subdirectory(osuppy)
 add_subdirectory(executable)
-add_subdirectory(osupy)

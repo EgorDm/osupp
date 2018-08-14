@@ -1,4 +1,4 @@
-project(osupy C CXX)
+project(osuppy C CXX)
 
 file(GLOB SOURCE_FILES
         "*.h"
