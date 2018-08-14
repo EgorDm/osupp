@@ -7,7 +7,7 @@ namespace py = pybind11;
 using namespace std;
 using namespace osupp;
 
-PYBIND11_MODULE(osupp, m) {
+PYBIND11_MODULE(osupy, m) {
     m.doc() = "Library with tools for processing osu files";
 
     py::class_<OsuDB>(m, "OsuDB")
