@@ -9,6 +9,7 @@ from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 from sphinx.setup_command import BuildDoc
 
+
 def readme():
     with open('README.md') as f:
         return f.read()
@@ -89,5 +90,9 @@ setup(name=name,
               'version': ('setup.py', version),
               'release': ('setup.py', release)
           }
-      }
+      },
+      classifiers=(
+          "Programming Language :: Python :: 3",
+          "License :: OSI Approved :: MIT License",
+      ),
       )

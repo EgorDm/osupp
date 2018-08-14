@@ -46,3 +46,5 @@ gen
 
 docs/_build
 docs/_generate
+
+dist

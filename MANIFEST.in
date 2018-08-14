@@ -3,3 +3,4 @@ global-include CMakeLists.txt *.cmake
 recursive-include osupy *
 recursive-include osupp *
 recursive-include libs/pybind11/include *.h
+prune cmake-build*
