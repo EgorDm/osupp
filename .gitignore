@@ -43,3 +43,5 @@ gen
 /cmake-build-executable
 /cmake-build-pylibrary
 /cmake-build-library
+
+docs/_build

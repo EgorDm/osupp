@@ -8,7 +8,9 @@ using namespace std;
 using namespace osupp;
 
 PYBIND11_MODULE(osupy, m) {
-    m.doc() = "Library with tools for processing osu files";
+    m.doc() = R"pbdoc(
+        Library with tools for processing osu files
+    )pbdoc";
 
     py::class_<OsuDB>(m, "OsuDB")
             .def(py::init<const std::string &>())
@@ -109,7 +111,9 @@ PYBIND11_MODULE(osupy, m) {
 
 
     m.def("read_beatmap", &read_beatmap,
-          "Reads beatmap data using specified flags.",
+          R"pbdoc(
+                Reads beatmap data using specified flags.
+          )pbdoc",
           py::arg("file"),
           py::arg("read_flags") = ALL_SECTIONS
     );
