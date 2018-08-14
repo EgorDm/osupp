@@ -9,7 +9,7 @@ using namespace osupp;
 
 PYBIND11_MODULE(osupy, m) {
     m.doc() = R"pbdoc(
-        Library with tools for processing osu files
+        osupp
         -----------------------
 
         .. currentmodule:: osupy
@@ -18,6 +18,8 @@ PYBIND11_MODULE(osupy, m) {
            :toctree: _generate
 
            read_beatmap
+           Curve
+           HitObject
     )pbdoc";
 
     py::class_<OsuDB>(m, "OsuDB")
@@ -87,10 +89,20 @@ PYBIND11_MODULE(osupy, m) {
             .def_readwrite("x", &Coordinate::x)
             .def_readwrite("y", &Coordinate::y);
 
-    py::class_<HitObject>(m, "HitObject")
-            .def_readwrite("pos", &HitObject::pos)
-            .def_readwrite("time", &HitObject::time)
-            .def_readwrite("new_combo", &HitObject::new_combo);
+    py::class_<HitObject>(m, "HitObject", R"pbdoc(
+             Base hitobject class
+             )pbdoc")
+            .def_readwrite("pos", &HitObject::pos, R"pbdoc(
+                Position of the histobject.
+
+                x ranges from 0 to 512 pixels, inclusive, and y ranges from 0 to 384 pixels, inclusive.
+            )pbdoc")
+            .def_readwrite("time", &HitObject::time, R"pbdoc(
+                time is an integral number of milliseconds from the beginning of the song, and specifies when the hit begins.
+            )pbdoc")
+            .def_readwrite("new_combo", &HitObject::new_combo, R"pbdoc(
+                Wether hitobject starts new combo
+            )pbdoc");
 
     py::class_<HitCircle, HitObject>(m, "HitCircle");
 
@@ -102,12 +114,27 @@ PYBIND11_MODULE(osupy, m) {
     py::class_<Spinner, HitObject>(m, "Spinner")
             .def_readwrite("end_time", &Spinner::end_time);
 
-    py::class_<Curve>(m, "Curve")
-            .def("position_at", &Curve::position_at)
-            .def("length", &Curve::length)
-            .def("get_type", &Curve::get_type)
-            .def("get_points", &Curve::get_points)
-            .def("set_points", &Curve::set_points);
+    py::class_<Curve>(m, "Curve", R"pbdoc(
+             Curve class that contains the curve information and helper methods to extract the curve properties and
+             interpolated positions.
+             )pbdoc")
+            .def(py::init<Curve::CurveType, const std::vector<Coordinate> &, double>(),
+                 py::arg("type"), py::arg("points"), py::arg("length"))
+            .def("position_at", &Curve::position_at, R"pbdoc(
+                Gets slider position at a normalized position between 0 and 1
+            )pbdoc")
+            .def("length", &Curve::length, R"pbdoc(
+                Gets slider length in pixels. (Repeats are not included)
+            )pbdoc")
+            .def("get_type", &Curve::get_type, R"pbdoc(
+                Gets the slider type
+            )pbdoc")
+            .def("get_points", &Curve::get_points, R"pbdoc(
+                Gets a list of base points on the slider.
+            )pbdoc")
+            .def("set_points", &Curve::set_points, R"pbdoc(
+                Sets a list of base points on the slider.
+            )pbdoc");
 
     py::enum_<Curve::CurveType>(m, "CurveType")
             .value("None", Curve::CurveType::None)
@@ -118,9 +145,30 @@ PYBIND11_MODULE(osupy, m) {
             .export_values();
 
 
+    m.attr("META_SECTION") = py::int_(META_SECTION);
+    m.attr("DIFFICULTY_SECTION") = py::int_(DIFFICULTY_SECTION);
+    m.attr("TIMING_SECTION") = py::int_(TIMING_SECTION);
+    m.attr("HITOBJECT_SECTION") = py::int_(HITOBJECT_SECTION);
+    m.attr("ALL_SECTIONS") = py::int_(ALL_SECTIONS);
+
     m.def("read_beatmap", &read_beatmap,
           R"pbdoc(
                 Reads beatmap data using specified flags.
+
+                Use following flags to specify reading mode:
+
+                * META_SECTION
+                * DIFFICULTY_SECTION
+                * TIMING_SECTION
+                * HITOBJECT_SECTION
+                * ALL_SECTIONS
+
+                Example code for reading only meta and timing of a beatmap.
+
+                .. code-block:: python
+
+                   beatmap = osupy.read_beatmap("./Cool Songs.osu", META_SECTION | DIFFICULTY_SECTION | TIMING_SECTION)
+
           )pbdoc",
           py::arg("file"),
           py::arg("read_flags") = ALL_SECTIONS

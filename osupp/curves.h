@@ -10,6 +10,10 @@
 
 namespace osupp {
 
+    /**
+     * Curve class that contains the curve information and helper methods to extract the curve properties and
+     * interpolated positions
+     */
     class Curve {
     public:
         enum CurveType {
@@ -24,7 +28,7 @@ namespace osupp {
 
         Curve(const std::vector<Coordinate> &points, double length);
 
-        Coordinate position_at(float progress);
+        Coordinate position_at(float t);
 
         double length();
 
@@ -39,7 +43,7 @@ namespace osupp {
 
         int index_of_distance(double d);
 
-        double progress_to_distance(float progress);
+        double t_to_distance(float progress);
 
         Coordinate interpolate_vertices(int i, double d);
 

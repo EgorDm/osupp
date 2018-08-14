@@ -66,7 +66,7 @@ namespace osupp {
         return i;
     }
 
-    double Curve::progress_to_distance(float progress) {
+    double Curve::t_to_distance(float progress) {
         return maths::clamp(progress, 0, 1) * px_length;
     }
 
@@ -92,10 +92,10 @@ namespace osupp {
         return p0 + (p1 - p0) * (float) w;
     }
 
-    Coordinate Curve::position_at(float progress) {
+    Coordinate Curve::position_at(float t) {
         if (cum_length.empty()) calc_cum_length();
 
-        double d = progress_to_distance(progress);
+        double d = t_to_distance(t);
         return interpolate_vertices(index_of_distance(d), d);
     }
 

@@ -7,7 +7,7 @@ import subprocess
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
-
+from sphinx.setup_command import BuildDoc
 
 def readme():
     with open('README.md') as f:
@@ -62,16 +62,32 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.', '--target', 'osupy'] + build_args, cwd=self.build_temp)
 
 
-setup(name='osupy',
-      version='1.0.0',
+name = 'osupy'
+version = '1.0.0'
+release = '1.0.0'
+
+cmdclass = {
+    'build_ext': CMakeBuild,
+    'build_sphinx': BuildDoc
+}
+
+setup(name=name,
+      version=version,
       author='Egor Dmitriev',
       author_email='egordmitriev@gmail.com',
-      description='Library with utilities to modify osu files.',
+      description='Library with tools to modify osu beatmap and database files.',
       long_description=readme(),
       long_description_content_type='text/markdown',
       url='https://github.com/EgorDm/osupp',
       license='MIT',
       ext_modules=[CMakeExtension('osupy')],
-      cmdclass=dict(build_ext=CMakeBuild),
+      cmdclass=cmdclass,
       zip_safe=False,
+      command_options={
+          'build_sphinx': {
+              'project': ('setup.py', name),
+              'version': ('setup.py', version),
+              'release': ('setup.py', release)
+          }
+      }
       )

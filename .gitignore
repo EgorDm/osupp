@@ -45,3 +45,4 @@ gen
 /cmake-build-library
 
 docs/_build
+docs/_generate
