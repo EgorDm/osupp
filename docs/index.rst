@@ -1,4 +1,4 @@
-osupy Documentation
+osuppy Documentation
 ============================
 
 Contents:
@@ -6,4 +6,4 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   osupy
+   osuppy

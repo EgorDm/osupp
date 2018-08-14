@@ -1,1 +1,1 @@
-.. automodule:: osupy
+.. automodule:: osuppy
